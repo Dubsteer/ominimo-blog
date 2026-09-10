@@ -1,58 +1,82 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Ominimo Claims Experience Hub
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel community platform where customers can share experiences, ask questions, and discuss the stages of an insurance claim. The application is designed as a realistic extension of a traditional blog assignment while avoiding the storage of real claim references or sensitive insurance data.
 
-## About Laravel
+## Project status
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Preparation and Phases 2 through 5 are complete. The application includes Laravel session authentication, account management, role boundaries, representative seed data, the complete post and comment lifecycles, database-backed search and filters, preserved pagination, and strict relationship loading.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Planned functionality
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- User registration, login, logout, and profile management
+- User, moderator, and administrator roles
+- Post creation, editing, publishing, viewing, and deletion
+- Claim-stage classification and post filtering
+- Guest and authenticated comment creation, ownership-based deletion, and moderation
+- Ownership and role authorization through Laravel policies and middleware
+- Database-level search and pagination
+- Eager loading and relationship counts to prevent N+1 queries
+- Validated image uploads with queued image processing
+- Redis queues monitored through Laravel Horizon
+- Responsive Blade interface inspired by Ominimo's visual identity
+- Feature and unit test coverage
 
-## Learning Laravel
+## Technology
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- PHP 8.4
+- Laravel 13
+- Laravel's built-in session authentication with Blade
+- Tailwind CSS
+- MySQL 8.4
+- Redis 7
+- Laravel Horizon
+- Docker Compose
+- PHPUnit
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Local prerequisites
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+- Laravel Herd or an equivalent PHP and Composer environment
+- Node.js and npm
+- Git
+- Docker Desktop with Docker Compose
 
-## Agentic Development
+## Initial local setup
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+The detailed delivery instructions will be finalized as dependencies are added. The current workflow is:
 
-```bash
-composer require laravel/boost --dev
+1. Run `composer install`.
+2. Copy `.env.example` to `.env` and run `php artisan key:generate`.
+3. Start MySQL and Redis with `docker compose up -d`.
+4. Run `php artisan migrate --seed`.
+5. Run `npm install` and `npm run build`.
+6. Start Laravel with `php artisan serve`.
 
-php artisan boost:install
+The local seeder creates these demonstration accounts:
+
+| Role | Email | Local password |
+| --- | --- | --- |
+| User | `kronos.p@example.com` | `!Kronos.p1` |
+| Moderator | `themis.r@example.com` | `!Themis.t2` |
+| Administrator | `atlas.m@example.com` | `!Atlas.a3` |
+
+These credentials are only for seeded local development data and must be replaced outside local development.
+
+Do not commit `.env`, database data, uploaded files, credentials, or API keys.
+
+## Documentation
+
+The implementation phases, architecture decisions, acceptance criteria, and quality standards are recorded in [docs/PROJECT_PLAN.md](docs/PROJECT_PLAN.md).
+
+## Testing and quality
+
+Every feature must include appropriate automated tests. Before a feature is merged, the project must pass:
+
+```powershell
+php artisan test
+vendor\bin\pint --test
+npm run build
 ```
-
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is being developed as a technical assignment.
