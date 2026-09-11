@@ -8,7 +8,7 @@
         <h1 class="mt-3 text-4xl font-bold tracking-tight">Edit your post</h1>
         <p class="mt-4 max-w-2xl text-slate-600">The public URL remains stable when you update the title.</p>
 
-        <form method="POST" action="{{ route('posts.update', $post) }}" class="mt-10 rounded-2xl border border-slate-200 bg-white p-7 shadow-sm sm:p-9">
+        <form method="POST" action="{{ route('posts.update', $post) }}" enctype="multipart/form-data" class="mt-10 rounded-2xl border border-slate-200 bg-white p-7 shadow-sm sm:p-9">
             @include('posts._form', [
                 'method' => 'PUT',
                 'submitLabel' => 'Save changes',

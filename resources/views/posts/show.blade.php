@@ -30,6 +30,12 @@
             {{ ($post->published_at ?? $post->created_at)->toFormattedDateString() }}
         </p>
 
+        @if ($post->processed_image_path)
+            <img src="{{ $post->processedImageUrl() }}" alt="" class="mt-8 aspect-video w-full rounded-2xl object-cover shadow-sm">
+        @elseif ($post->original_image_path)
+            <p class="mt-8 rounded-xl bg-slate-100 px-4 py-3 text-sm font-medium text-slate-600" role="status">The supporting image is being processed.</p>
+        @endif
+
         @canany(['update', 'delete'], $post)
             <div class="mt-8 flex flex-wrap items-center gap-4 border-y border-slate-200 py-4">
                 @can('update', $post)

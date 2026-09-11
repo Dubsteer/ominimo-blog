@@ -93,25 +93,31 @@
         @else
             <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 @foreach ($posts as $post)
-                    <article class="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                        <div class="flex flex-wrap items-center gap-2 text-xs font-bold uppercase tracking-wide">
+                    <article class="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                        @if ($post->processed_image_path)
+                            <img src="{{ $post->processedImageUrl() }}" alt="" loading="lazy" class="aspect-video w-full object-cover">
+                        @endif
+
+                        <div class="flex flex-1 flex-col p-6">
+                            <div class="flex flex-wrap items-center gap-2 text-xs font-bold uppercase tracking-wide">
                             <span class="rounded-full bg-amber-100 px-3 py-1 text-amber-900">{{ $post->claim_stage->label() }}</span>
                             @if ($post->status === \App\Enums\PostStatus::Draft)
                                 <span class="rounded-full bg-slate-200 px-3 py-1 text-slate-700">Draft</span>
                             @endif
-                        </div>
+                            </div>
 
-                        <h2 class="mt-5 text-2xl font-bold tracking-tight">
-                            <a href="{{ route('posts.show', $post) }}" class="hover:underline hover:decoration-amber-400 hover:decoration-2 hover:underline-offset-4">{{ $post->title }}</a>
-                        </h2>
-                        <p class="mt-3 flex-1 text-slate-600">{{ \Illuminate\Support\Str::limit($post->content, 170) }}</p>
-                        <p class="mt-6 text-sm font-medium text-slate-500">
-                            By {{ $post->user->name }}
-                            <span aria-hidden="true">&middot;</span>
-                            {{ ($post->published_at ?? $post->created_at)->toFormattedDateString() }}
-                            <span aria-hidden="true">&middot;</span>
-                            {{ $post->comments_count }} {{ \Illuminate\Support\Str::plural('comment', $post->comments_count) }}
-                        </p>
+                            <h2 class="mt-5 text-2xl font-bold tracking-tight">
+                                <a href="{{ route('posts.show', $post) }}" class="hover:underline hover:decoration-amber-400 hover:decoration-2 hover:underline-offset-4">{{ $post->title }}</a>
+                            </h2>
+                            <p class="mt-3 flex-1 text-slate-600">{{ \Illuminate\Support\Str::limit($post->content, 170) }}</p>
+                            <p class="mt-6 text-sm font-medium text-slate-500">
+                                By {{ $post->user->name }}
+                                <span aria-hidden="true">&middot;</span>
+                                {{ ($post->published_at ?? $post->created_at)->toFormattedDateString() }}
+                                <span aria-hidden="true">&middot;</span>
+                                {{ $post->comments_count }} {{ \Illuminate\Support\Str::plural('comment', $post->comments_count) }}
+                            </p>
+                        </div>
                     </article>
                 @endforeach
             </div>
