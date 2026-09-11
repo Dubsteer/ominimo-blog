@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\ClaimStage;
 use App\Enums\PostStatus;
 use App\Policies\PostPolicy;
+use App\Services\PostImageStorage;
 use Database\Factories\PostFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
@@ -13,6 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 #[Fillable(['title', 'content', 'claim_stage', 'status'])]
@@ -131,5 +133,14 @@ class Post extends Model
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+
+    public function processedImageUrl(): ?string
+    {
+        if (blank($this->processed_image_path)) {
+            return null;
+        }
+
+        return Storage::disk(PostImageStorage::PROCESSED_DISK)->url($this->processed_image_path);
     }
 }

@@ -62,6 +62,40 @@
         </div>
     </div>
 
+    <div>
+        <label for="image" class="block text-sm font-semibold text-slate-800">Supporting image <span class="font-normal text-slate-500">(optional)</span></label>
+        <input
+            id="image"
+            name="image"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            @if ($errors->has('image')) aria-invalid="true" aria-describedby="image-error" @endif
+            class="mt-2 block w-full rounded-xl border border-slate-300 bg-white text-sm text-slate-700 file:mr-4 file:border-0 file:bg-slate-950 file:px-4 file:py-3 file:font-semibold file:text-white hover:file:bg-slate-800"
+        >
+        @error('image')
+            <p id="image-error" class="mt-2 text-sm font-medium text-red-700">{{ $message }}</p>
+        @enderror
+        <p class="mt-2 text-sm text-slate-600">JPEG, PNG, or WebP up to 8 MB and 8000 × 8000 pixels. Do not upload claim documents, identifying details, or sensitive information.</p>
+
+        @if ($post?->original_image_path)
+            <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+                @if ($post->processed_image_path)
+                    <img src="{{ $post->processedImageUrl() }}" alt="" class="max-h-48 rounded-lg object-cover">
+                @else
+                    <p class="text-sm font-medium text-slate-600">The current image is waiting to be processed.</p>
+                @endif
+
+                <label class="mt-3 flex items-center gap-2 text-sm font-semibold text-red-700">
+                    <input type="checkbox" name="remove_image" value="1" @checked(old('remove_image')) class="rounded border-slate-300 text-red-700 focus:ring-red-600">
+                    Remove the current image
+                </label>
+                @error('remove_image')
+                    <p class="mt-2 text-sm font-medium text-red-700">{{ $message }}</p>
+                @enderror
+            </div>
+        @endif
+    </div>
+
     <div class="flex flex-wrap items-center gap-4">
         <button type="submit" class="rounded-xl bg-slate-950 px-6 py-3 font-semibold text-white hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-300">
             {{ $submitLabel }}

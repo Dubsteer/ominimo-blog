@@ -8,14 +8,18 @@ use App\Enums\PostStatus;
 use App\Http\Requests\Post\SearchPostsRequest;
 use App\Http\Requests\Post\StorePostRequest;
 use App\Http\Requests\Post\UpdatePostRequest;
+use App\Jobs\ProcessPostImage;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
+use App\Services\PostImageStorage;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
+use Throwable;
 
 class PostController extends Controller
 {
@@ -83,9 +87,32 @@ class PostController extends Controller
         return view('posts.create', $this->formOptions());
     }
 
-    public function store(StorePostRequest $request): RedirectResponse
+    public function store(StorePostRequest $request, PostImageStorage $images): RedirectResponse
     {
-        $post = $request->user()->posts()->create($request->validated());
+        $data = $request->safe()->except(['image', 'remove_image']);
+        $originalPath = null;
+
+        try {
+            if ($request->hasFile('image')) {
+                $originalPath = $images->storeOriginal($request->file('image'));
+            }
+
+            $post = DB::transaction(function () use ($request, $data, $originalPath): Post {
+                $post = $request->user()->posts()->make($data);
+                $post->original_image_path = $originalPath;
+                $post->save();
+
+                if ($originalPath !== null) {
+                    ProcessPostImage::dispatch($post->getKey(), $originalPath);
+                }
+
+                return $post;
+            });
+        } catch (Throwable $exception) {
+            $images->delete($originalPath, null);
+
+            throw $exception;
+        }
 
         return redirect()
             ->route('posts.show', $post)
@@ -118,19 +145,65 @@ class PostController extends Controller
         ]);
     }
 
-    public function update(UpdatePostRequest $request, Post $post): RedirectResponse
+    public function update(UpdatePostRequest $request, Post $post, PostImageStorage $images): RedirectResponse
     {
-        $post->update($request->validated());
+        $data = $request->safe()->except(['image', 'remove_image']);
+        $oldOriginalPath = $post->original_image_path;
+        $oldProcessedPath = $post->processed_image_path;
+        $newOriginalPath = null;
+        $hasReplacement = $request->hasFile('image');
+        $removeImage = $request->boolean('remove_image');
+
+        try {
+            if ($hasReplacement) {
+                $newOriginalPath = $images->storeOriginal($request->file('image'));
+            }
+
+            DB::transaction(function () use (
+                $post,
+                $data,
+                $hasReplacement,
+                $removeImage,
+                $newOriginalPath,
+            ): void {
+                $post->fill($data);
+
+                if ($hasReplacement) {
+                    $post->original_image_path = $newOriginalPath;
+                    $post->processed_image_path = null;
+                } elseif ($removeImage) {
+                    $post->original_image_path = null;
+                    $post->processed_image_path = null;
+                }
+
+                $post->save();
+
+                if ($newOriginalPath !== null) {
+                    ProcessPostImage::dispatch($post->getKey(), $newOriginalPath);
+                }
+            });
+        } catch (Throwable $exception) {
+            $images->delete($newOriginalPath, null);
+
+            throw $exception;
+        }
+
+        if ($hasReplacement || $removeImage) {
+            $images->delete($oldOriginalPath, $oldProcessedPath);
+        }
 
         return redirect()
             ->route('posts.show', $post)
             ->with('status', 'post-updated');
     }
 
-    public function destroy(Post $post): RedirectResponse
+    public function destroy(Post $post, PostImageStorage $images): RedirectResponse
     {
         Gate::authorize('delete', $post);
+        $originalPath = $post->original_image_path;
+        $processedPath = $post->processed_image_path;
         $post->delete();
+        $images->delete($originalPath, $processedPath);
 
         return redirect()
             ->route('posts.index')

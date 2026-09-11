@@ -93,7 +93,7 @@ The HTTP upload itself is not deferred. Expensive processing is performed asynch
 - [x] Start Docker Desktop and verify the MySQL and Redis containers
 - [x] Switch the local `.env` from SQLite to MySQL and Redis
 - [x] Run the existing migrations against MySQL
-- [ ] Create a private GitLab remote when the owner is ready
+- [x] Create and use a private GitHub remote
 
 ### Phase 2: Authentication and roles
 
@@ -133,12 +133,13 @@ The HTTP upload itself is not deferred. Expensive processing is performed asynch
 
 ### Phase 6: Images, queues, and Horizon
 
-- Add validated image storage
-- Add idempotent queued image processing
-- Configure Redis as the queue connection
-- Install and configure Laravel Horizon
-- Define retry, timeout, failure, and cleanup behaviour
-- Test storage and queued jobs with Laravel fakes
+- [x] Add validated image storage
+- [x] Add idempotent queued image processing
+- [x] Configure Redis as the queue connection
+- [x] Install and configure Laravel Horizon
+- [x] Schedule Horizon metrics snapshots
+- [x] Define retry, timeout, failure, and cleanup behaviour
+- [x] Test storage and queued jobs with Laravel fakes
 
 ### Phase 7: User interface
 
@@ -170,7 +171,7 @@ The HTTP upload itself is not deferred. Expensive processing is performed asynch
 - Document architectural decisions and known limitations
 - Verify that no secrets or local artifacts are tracked
 - Run the complete quality suite
-- Review the Git history and prepare the private GitLab repository for submission
+- Review the Git history and prepare the private GitHub repository for submission
 
 ## Git workflow
 

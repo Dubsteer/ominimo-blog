@@ -8,7 +8,7 @@
         <h1 class="mt-3 text-4xl font-bold tracking-tight">Share a claim experience</h1>
         <p class="mt-4 max-w-2xl text-slate-600">Focus on the process and lessons learned. Save a draft if you still need to remove identifying details.</p>
 
-        <form method="POST" action="{{ route('posts.store') }}" class="mt-10 rounded-2xl border border-slate-200 bg-white p-7 shadow-sm sm:p-9">
+        <form method="POST" action="{{ route('posts.store') }}" enctype="multipart/form-data" class="mt-10 rounded-2xl border border-slate-200 bg-white p-7 shadow-sm sm:p-9">
             @include('posts._form', [
                 'method' => 'POST',
                 'post' => null,
