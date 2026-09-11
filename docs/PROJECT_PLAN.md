@@ -143,11 +143,11 @@ The HTTP upload itself is not deferred. Expensive processing is performed asynch
 
 ### Phase 7: User interface
 
-- Define reusable design tokens and Blade components
-- Implement the Ominimo-inspired responsive layout
-- Build accessible navigation, cards, forms, status messages, and empty states
-- Add claim-stage and publication-status indicators
-- Verify mobile and desktop layouts
+- [x] Define reusable design tokens and Blade components
+- [x] Implement the Ominimo-inspired responsive layout
+- [x] Build accessible navigation, cards, forms, status messages, and empty states
+- [x] Add claim-stage and publication-status indicators
+- [x] Verify mobile and desktop layouts
 
 ### Phase 8: Administration
 

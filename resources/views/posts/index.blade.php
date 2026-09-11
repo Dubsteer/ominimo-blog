@@ -1,65 +1,87 @@
 @extends('layouts.app')
 
-@section('title', 'Posts | '.config('app.name'))
+@section('title', 'Stories | '.config('app.name'))
 
 @section('content')
-    <section class="mx-auto max-w-6xl px-5 py-16">
-        <div class="flex flex-wrap items-end justify-between gap-6">
+    @php
+        $createPostUrl = route('posts.create');
+        $postsIndexUrl = route('posts.index');
+    @endphp
+    <section class='page-shell page-section'>
+        <header class='grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end'>
             <div>
-                <p class="text-sm font-bold uppercase tracking-[0.16em] text-amber-700">Community stories</p>
-                <h1 class="mt-3 text-4xl font-bold tracking-tight">Claim experiences and questions</h1>
-                <p class="mt-4 max-w-2xl text-slate-600">Published discussions are public. When signed in, your own drafts also appear here.</p>
+                <p class='eyebrow'>Community stories</p>
+                <h1 class='page-title mt-5'>Find a story for your next step.</h1>
+                <p class='mt-5 max-w-2xl text-lg leading-8 text-ink-600'>Explore privacy-safe experiences and questions across every stage of the claim journey.</p>
             </div>
-
             @auth
-                <a href="{{ route('posts.create') }}" class="rounded-full bg-slate-950 px-6 py-3 font-semibold text-white hover:bg-slate-800">Create post</a>
+                <x-button :href='$createPostUrl' size='lg'>Share your experience <span aria-hidden='true'>+</span></x-button>
             @endauth
+        </header>
+
+        <div class='mt-9 overflow-hidden rounded-2xl border border-brand-100 bg-white px-5 py-4 shadow-card' aria-label='Claim journey stages'>
+            <div class='flex items-center gap-3 overflow-x-auto pb-1'>
+                <span class='shrink-0 text-xs font-extrabold uppercase tracking-[0.1em] text-ink-600'>Journey</span>
+                @foreach ($claimStages as $claimStage)
+                    <a href='{{ route('posts.index', ['claim_stage' => $claimStage->value]) }}' class='shrink-0'>
+                        <x-claim-stage :stage='$claimStage' />
+                    </a>
+                    @unless ($loop->last)
+                        <span class='text-brand-300' aria-hidden='true'>→</span>
+                    @endunless
+                @endforeach
+            </div>
         </div>
 
-        <form method="GET" action="{{ route('posts.index') }}" class="mt-10 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm" aria-label="Filter posts">
-            <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-5">
-                <div class="md:col-span-2 lg:col-span-2">
-                    <label for="q" class="text-sm font-semibold text-slate-800">Search</label>
-                    <input id="q" name="q" type="search" maxlength="100" value="{{ $filters['q'] ?? '' }}" placeholder="Search titles and experiences" class="mt-2 block w-full rounded-xl border-slate-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+        <form method='GET' action='{{ route('posts.index') }}' class='mt-8 rounded-[1.75rem] border border-brand-100 bg-brand-50/55 p-5 shadow-card sm:p-7' aria-label='Filter posts'>
+            <div class='flex flex-wrap items-center justify-between gap-3'>
+                <h2 class='text-lg font-extrabold tracking-tight'>Refine the stories</h2>
+                <p class='rounded-full bg-white px-3 py-1.5 text-sm font-bold text-brand-800 shadow-sm'>{{ $posts->total() }} {{ \Illuminate\Support\Str::plural('result', $posts->total()) }}</p>
+            </div>
+
+            <div class='mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-12'>
+                <div class='md:col-span-2 lg:col-span-4'>
+                    <label for='q' class='form-label'>Search</label>
+                    <input id='q' name='q' type='search' maxlength='100' value='{{ $filters['q'] ?? '' }}' placeholder='Search titles and experiences' class='form-control'>
                 </div>
 
-                <div>
-                    <label for="claim-stage" class="text-sm font-semibold text-slate-800">Claim stage</label>
-                    <select id="claim-stage" name="claim_stage" class="mt-2 block w-full rounded-xl border-slate-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
-                        <option value="">All stages</option>
+                <div class='lg:col-span-2'>
+                    <label for='claim-stage' class='form-label'>Claim stage</label>
+                    <select id='claim-stage' name='claim_stage' class='form-control'>
+                        <option value=''>All stages</option>
                         @foreach ($claimStages as $claimStage)
-                            <option value="{{ $claimStage->value }}" @selected(($filters['claim_stage'] ?? null) === $claimStage->value)>{{ $claimStage->label() }}</option>
+                            <option value='{{ $claimStage->value }}' @selected(($filters['claim_stage'] ?? null) === $claimStage->value)>{{ $claimStage->label() }}</option>
                         @endforeach
                     </select>
                 </div>
 
-                <div>
-                    <label for="author" class="text-sm font-semibold text-slate-800">Author</label>
-                    <select id="author" name="author" class="mt-2 block w-full rounded-xl border-slate-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
-                        <option value="">All authors</option>
+                <div class='lg:col-span-2'>
+                    <label for='author' class='form-label'>Author</label>
+                    <select id='author' name='author' class='form-control'>
+                        <option value=''>All authors</option>
                         @foreach ($authors as $author)
-                            <option value="{{ $author->id }}" @selected((string) ($filters['author'] ?? '') === (string) $author->id)>{{ $author->name }}</option>
+                            <option value='{{ $author->id }}' @selected((string) ($filters['author'] ?? '') === (string) $author->id)>{{ $author->name }}</option>
                         @endforeach
                     </select>
                 </div>
 
-                <div>
-                    <label for="discussion" class="text-sm font-semibold text-slate-800">Discussion</label>
-                    <select id="discussion" name="discussion" class="mt-2 block w-full rounded-xl border-slate-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
-                        <option value="">Any activity</option>
+                <div class='lg:col-span-2'>
+                    <label for='discussion' class='form-label'>Discussion</label>
+                    <select id='discussion' name='discussion' class='form-control'>
+                        <option value=''>Any activity</option>
                         @foreach ($discussionOptions as $value => $label)
-                            <option value="{{ $value }}" @selected(($filters['discussion'] ?? null) === $value)>{{ $label }}</option>
+                            <option value='{{ $value }}' @selected(($filters['discussion'] ?? null) === $value)>{{ $label }}</option>
                         @endforeach
                     </select>
                 </div>
 
                 @auth
-                    <div>
-                        <label for="status" class="text-sm font-semibold text-slate-800">Publication status</label>
-                        <select id="status" name="status" class="mt-2 block w-full rounded-xl border-slate-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
-                            <option value="">All visible statuses</option>
+                    <div class='lg:col-span-2'>
+                        <label for='status' class='form-label'>Publication status</label>
+                        <select id='status' name='status' class='form-control'>
+                            <option value=''>All visible</option>
                             @foreach ($statuses as $status)
-                                <option value="{{ $status->value }}" @selected(($filters['status'] ?? null) === $status->value)>{{ $status->label() }}</option>
+                                <option value='{{ $status->value }}' @selected(($filters['status'] ?? null) === $status->value)>{{ $status->label() }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -67,62 +89,43 @@
             </div>
 
             @if ($errors->any())
-                <p class="mt-4 text-sm font-medium text-red-700" role="alert">Check the filter values and try again.</p>
+                <x-notice tone='danger' class='mt-5' role='alert'>Check the filter values and try again.</x-notice>
             @endif
 
-            <div class="mt-6 flex flex-wrap items-center gap-4">
-                <button type="submit" class="rounded-full bg-slate-950 px-6 py-3 font-semibold text-white hover:bg-slate-800">Apply filters</button>
+            <div class='mt-6 flex flex-wrap items-center gap-3'>
+                <x-button type='submit'>Apply filters</x-button>
                 @if ($hasFilters)
-                    <a href="{{ route('posts.index') }}" class="text-sm font-semibold text-slate-700 hover:text-slate-950">Clear filters</a>
+                    <x-button :href='$postsIndexUrl' variant='quiet'>Clear all</x-button>
                 @endif
-                <p class="ml-auto text-sm font-medium text-slate-500">{{ $posts->total() }} {{ \Illuminate\Support\Str::plural('result', $posts->total()) }}</p>
             </div>
         </form>
 
         @if (session('status') === 'post-deleted')
-            <p class="mt-8 rounded-xl bg-emerald-50 px-4 py-3 font-medium text-emerald-800" role="status">Post deleted.</p>
+            <x-notice class='mt-8' role='status'>Post deleted.</x-notice>
         @endif
 
         @if ($posts->isEmpty())
-            <div class="mt-10 rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
-                <h2 class="text-2xl font-bold">{{ $hasFilters ? 'No matching posts' : 'No posts yet' }}</h2>
-                <p class="mt-2 text-slate-600">
-                    {{ $hasFilters ? 'Try removing one or more filters.' : 'The first privacy-safe experience can start the discussion.' }}
-                </p>
-            </div>
+            @php
+                $emptyTitle = $hasFilters ? 'No matching stories' : 'No stories yet';
+                $emptyActionHref = $hasFilters ? route('posts.index') : (auth()->check() ? route('posts.create') : null);
+                $emptyActionLabel = $hasFilters ? 'Clear filters' : (auth()->check() ? 'Create the first post' : null);
+            @endphp
+            <x-empty-state
+                class='mt-10'
+                :title='$emptyTitle'
+                :action-href='$emptyActionHref'
+                :action-label='$emptyActionLabel'
+            >
+                {{ $hasFilters ? 'Try removing one or more filters to widen your search.' : 'The first privacy-safe experience can start a useful discussion.' }}
+            </x-empty-state>
         @else
-            <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div class='mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3'>
                 @foreach ($posts as $post)
-                    <article class="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                        @if ($post->processed_image_path)
-                            <img src="{{ $post->processedImageUrl() }}" alt="" loading="lazy" class="aspect-video w-full object-cover">
-                        @endif
-
-                        <div class="flex flex-1 flex-col p-6">
-                            <div class="flex flex-wrap items-center gap-2 text-xs font-bold uppercase tracking-wide">
-                            <span class="rounded-full bg-amber-100 px-3 py-1 text-amber-900">{{ $post->claim_stage->label() }}</span>
-                            @if ($post->status === \App\Enums\PostStatus::Draft)
-                                <span class="rounded-full bg-slate-200 px-3 py-1 text-slate-700">Draft</span>
-                            @endif
-                            </div>
-
-                            <h2 class="mt-5 text-2xl font-bold tracking-tight">
-                                <a href="{{ route('posts.show', $post) }}" class="hover:underline hover:decoration-amber-400 hover:decoration-2 hover:underline-offset-4">{{ $post->title }}</a>
-                            </h2>
-                            <p class="mt-3 flex-1 text-slate-600">{{ \Illuminate\Support\Str::limit($post->content, 170) }}</p>
-                            <p class="mt-6 text-sm font-medium text-slate-500">
-                                By {{ $post->user->name }}
-                                <span aria-hidden="true">&middot;</span>
-                                {{ ($post->published_at ?? $post->created_at)->toFormattedDateString() }}
-                                <span aria-hidden="true">&middot;</span>
-                                {{ $post->comments_count }} {{ \Illuminate\Support\Str::plural('comment', $post->comments_count) }}
-                            </p>
-                        </div>
-                    </article>
+                    <x-post-card :post='$post' />
                 @endforeach
             </div>
 
-            <div class="mt-10">{{ $posts->links() }}</div>
+            <div class='mt-10 rounded-2xl bg-white p-4 shadow-card'>{{ $posts->links() }}</div>
         @endif
     </section>
 @endsection

@@ -4,104 +4,122 @@
     @method($method)
 @endif
 
-<div class="space-y-6">
-    <x-form-field
-        name="title"
-        label="Title"
-        :value="$post?->title"
-        :required="true"
-        maxlength="160"
-        autofocus
-    />
+@php($cancelUrl = $post ? route('posts.show', $post) : route('posts.index'))
 
-    <div>
-        <label for="content" class="block text-sm font-semibold text-slate-800">Experience or question</label>
-        <textarea
-            id="content"
-            name="content"
-            rows="12"
-            maxlength="50000"
-            required
-            @if ($errors->has('content')) aria-invalid="true" aria-describedby="content-error" @endif
-            class="mt-2 block w-full rounded-xl border bg-white px-4 py-3 text-slate-950 shadow-sm outline-none transition {{ $errors->has('content') ? 'border-red-400 focus:border-red-500 focus:ring-4 focus:ring-red-100' : 'border-slate-300 focus:border-amber-500 focus:ring-4 focus:ring-amber-100' }}"
-        >{{ old('content', $post?->content) }}</textarea>
-        @error('content')
-            <p id="content-error" class="mt-2 text-sm font-medium text-red-700">{{ $message }}</p>
-        @enderror
-        <p class="mt-2 text-sm text-slate-600">Minimum 30 characters. Do not include names, contact details, claim or policy numbers, payment data, or medical information.</p>
-    </div>
+<div class='space-y-8'>
+    @if ($errors->any())
+        <x-notice tone='danger' role='alert'>Some details need your attention. Review the highlighted fields below.</x-notice>
+    @endif
 
-    <div class="grid gap-6 sm:grid-cols-2">
-        <div>
-            <label for="claim_stage" class="block text-sm font-semibold text-slate-800">Claim stage</label>
-            <select id="claim_stage" name="claim_stage" required class="mt-2 block w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-950 shadow-sm focus:border-amber-500 focus:outline-none focus:ring-4 focus:ring-amber-100">
-                <option value="">Select a stage</option>
-                @foreach ($claimStages as $claimStage)
-                    <option value="{{ $claimStage->value }}" @selected(old('claim_stage', $post?->claim_stage?->value) === $claimStage->value)>
-                        {{ $claimStage->label() }}
-                    </option>
-                @endforeach
-            </select>
-            @error('claim_stage')
-                <p class="mt-2 text-sm font-medium text-red-700">{{ $message }}</p>
-            @enderror
-        </div>
+    <fieldset class='space-y-6'>
+        <legend class='text-xl font-extrabold tracking-tight'>Your story</legend>
+
+        <x-form-field
+            name='title'
+            label='Title'
+            :value='$post?->title'
+            help='Make it specific enough to help someone scanning the community.'
+            :required='true'
+            maxlength='160'
+            autofocus
+        />
 
         <div>
-            <label for="status" class="block text-sm font-semibold text-slate-800">Publication status</label>
-            <select id="status" name="status" required class="mt-2 block w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-950 shadow-sm focus:border-amber-500 focus:outline-none focus:ring-4 focus:ring-amber-100">
-                @foreach ($statuses as $status)
-                    <option value="{{ $status->value }}" @selected(old('status', $post?->status?->value ?? 'draft') === $status->value)>
-                        {{ $status->label() }}
-                    </option>
-                @endforeach
-            </select>
-            @error('status')
-                <p class="mt-2 text-sm font-medium text-red-700">{{ $message }}</p>
+            <label for='content' class='form-label'>Experience or question</label>
+            <textarea
+                id='content'
+                name='content'
+                rows='12'
+                maxlength='50000'
+                required
+                @if ($errors->has('content')) aria-invalid='true' aria-describedby='content-help content-error' @else aria-describedby='content-help' @endif
+                class='form-control min-h-72 resize-y leading-7'
+            >{{ old('content', $post?->content) }}</textarea>
+            <p id='content-help' class='form-help'>Minimum 30 characters. Focus on the process and lesson learned; remove names, contact details, claim or policy numbers, payment data, and medical information.</p>
+            @error('content')
+                <p id='content-error' class='form-error'>{{ $message }}</p>
             @enderror
         </div>
-    </div>
+    </fieldset>
 
-    <div>
-        <label for="image" class="block text-sm font-semibold text-slate-800">Supporting image <span class="font-normal text-slate-500">(optional)</span></label>
-        <input
-            id="image"
-            name="image"
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            @if ($errors->has('image')) aria-invalid="true" aria-describedby="image-error" @endif
-            class="mt-2 block w-full rounded-xl border border-slate-300 bg-white text-sm text-slate-700 file:mr-4 file:border-0 file:bg-slate-950 file:px-4 file:py-3 file:font-semibold file:text-white hover:file:bg-slate-800"
-        >
-        @error('image')
-            <p id="image-error" class="mt-2 text-sm font-medium text-red-700">{{ $message }}</p>
-        @enderror
-        <p class="mt-2 text-sm text-slate-600">JPEG, PNG, or WebP up to 8 MB and 8000 × 8000 pixels. Do not upload claim documents, identifying details, or sensitive information.</p>
+    <fieldset class='border-t border-brand-100 pt-7'>
+        <legend class='text-xl font-extrabold tracking-tight'>Journey and visibility</legend>
+        <p class='mt-2 text-sm leading-6 text-ink-600'>Help readers understand where this story belongs and whether it is ready to publish.</p>
 
-        @if ($post?->original_image_path)
-            <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
-                @if ($post->processed_image_path)
-                    <img src="{{ $post->processedImageUrl() }}" alt="" class="max-h-48 rounded-lg object-cover">
-                @else
-                    <p class="text-sm font-medium text-slate-600">The current image is waiting to be processed.</p>
-                @endif
-
-                <label class="mt-3 flex items-center gap-2 text-sm font-semibold text-red-700">
-                    <input type="checkbox" name="remove_image" value="1" @checked(old('remove_image')) class="rounded border-slate-300 text-red-700 focus:ring-red-600">
-                    Remove the current image
-                </label>
-                @error('remove_image')
-                    <p class="mt-2 text-sm font-medium text-red-700">{{ $message }}</p>
+        <div class='mt-6 grid gap-6 sm:grid-cols-2'>
+            <div>
+                <label for='claim_stage' class='form-label'>Claim stage</label>
+                <select id='claim_stage' name='claim_stage' required @if ($errors->has('claim_stage')) aria-invalid='true' aria-describedby='claim-stage-error' @endif class='form-control'>
+                    <option value=''>Select a stage</option>
+                    @foreach ($claimStages as $claimStage)
+                        <option value='{{ $claimStage->value }}' @selected(old('claim_stage', $post?->claim_stage?->value) === $claimStage->value)>
+                            {{ $claimStage->label() }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('claim_stage')
+                    <p id='claim-stage-error' class='form-error'>{{ $message }}</p>
                 @enderror
             </div>
-        @endif
-    </div>
 
-    <div class="flex flex-wrap items-center gap-4">
-        <button type="submit" class="rounded-xl bg-slate-950 px-6 py-3 font-semibold text-white hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-300">
-            {{ $submitLabel }}
-        </button>
-        <a href="{{ $post ? route('posts.show', $post) : route('posts.index') }}" class="font-semibold text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-950">
-            Cancel
-        </a>
+            <div>
+                <label for='status' class='form-label'>Publication status</label>
+                <select id='status' name='status' required @if ($errors->has('status')) aria-invalid='true' aria-describedby='status-error' @endif class='form-control'>
+                    @foreach ($statuses as $status)
+                        <option value='{{ $status->value }}' @selected(old('status', $post?->status?->value ?? 'draft') === $status->value)>
+                            {{ $status->label() }}
+                        </option>
+                    @endforeach
+                </select>
+                <p class='form-help'>Drafts are visible only to you and authorized moderators.</p>
+                @error('status')
+                    <p id='status-error' class='form-error'>{{ $message }}</p>
+                @enderror
+            </div>
+        </div>
+    </fieldset>
+
+    <fieldset class='border-t border-brand-100 pt-7'>
+        <legend class='text-xl font-extrabold tracking-tight'>Supporting image <span class='font-medium text-ink-600'>(optional)</span></legend>
+        <p class='mt-2 text-sm leading-6 text-ink-600'>Add a general illustration or photo only when it helps explain the story.</p>
+
+        <div class='mt-6'>
+            <label for='image' class='form-label'>Choose an image</label>
+            <input
+                id='image'
+                name='image'
+                type='file'
+                accept='image/jpeg,image/png,image/webp'
+                @if ($errors->has('image')) aria-invalid='true' aria-describedby='image-help image-error' @else aria-describedby='image-help' @endif
+                class='form-control p-0 text-sm text-ink-600 file:mr-4 file:min-h-12 file:border-0 file:bg-brand-600 file:px-5 file:py-3 file:font-bold file:text-white hover:file:bg-brand-500'
+            >
+            <p id='image-help' class='form-help'>JPEG, PNG, or WebP up to 8 MB and 8000 × 8000 pixels. Never upload claim documents or identifying details.</p>
+            @error('image')
+                <p id='image-error' class='form-error'>{{ $message }}</p>
+            @enderror
+
+            @if ($post?->original_image_path)
+                <div class='mt-5 rounded-2xl border border-brand-100 bg-brand-50/60 p-4'>
+                    @if ($post->processed_image_path)
+                        <img src='{{ $post->processedImageUrl() }}' alt='' class='max-h-56 rounded-xl object-cover'>
+                    @else
+                        <x-notice tone='info' role='status'>The current image is waiting to be processed.</x-notice>
+                    @endif
+
+                    <label class='mt-4 flex min-h-11 cursor-pointer items-center gap-3 text-sm font-bold text-red-800'>
+                        <input type='checkbox' name='remove_image' value='1' @checked(old('remove_image')) class='size-5 rounded-md border-red-300 text-red-700 focus:ring-red-300'>
+                        Remove the current image
+                    </label>
+                    @error('remove_image')
+                        <p class='form-error'>{{ $message }}</p>
+                    @enderror
+                </div>
+            @endif
+        </div>
+    </fieldset>
+
+    <div class='flex flex-wrap items-center gap-3 border-t border-brand-100 pt-7'>
+        <x-button type='submit' size='lg'>{{ $submitLabel }}</x-button>
+        <x-button :href='$cancelUrl' variant='quiet' size='lg'>Cancel</x-button>
     </div>
 </div>
