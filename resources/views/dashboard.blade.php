@@ -17,6 +17,22 @@
         </div>
 
         <div class='mt-8 grid gap-5 md:grid-cols-2'>
+            @if (auth()->user()->canModerateContent())
+                <a href='{{ route('admin.index') }}' class='group relative overflow-hidden rounded-[1.75rem] bg-brand-600 p-7 text-white shadow-soft transition hover:-translate-y-1 hover:bg-brand-500 sm:p-8 md:col-span-2'>
+                    <div class='flex flex-wrap items-center justify-between gap-6'>
+                        <div class='flex items-start gap-5'>
+                            <span class='grid size-13 shrink-0 place-items-center rounded-2xl bg-white/15 text-xl font-black' aria-hidden='true'>✓</span>
+                            <div>
+                                <p class='text-sm font-extrabold uppercase tracking-[0.1em] text-brand-100'>Administration</p>
+                                <h2 class='mt-2 text-2xl font-extrabold tracking-tight'>Open moderation workspace</h2>
+                                <p class='mt-2 max-w-xl leading-7 text-brand-50'>Review post publication and comment visibility from one focused dashboard.</p>
+                            </div>
+                        </div>
+                        <span class='font-bold'>Review content <span aria-hidden='true'>→</span></span>
+                    </div>
+                </a>
+            @endif
+
             <a href='{{ route('posts.create') }}' class='group surface-card relative overflow-hidden p-7 transition hover:-translate-y-1 hover:border-brand-300 sm:p-8'>
                 <div class='flex items-start justify-between gap-5'>
                     <span class='grid size-13 place-items-center rounded-2xl bg-brand-600 text-2xl font-black text-white' aria-hidden='true'>+</span>

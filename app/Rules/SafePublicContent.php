@@ -14,7 +14,7 @@ class SafePublicContent implements ValidationRule
      * @var array<int, string>
      */
     private const BLOCKED_PATTERNS = [
-        '/\b(?:claim|policy|reference)\s*(?:number|no\.?|id|#)\s*[:#-]?\s*[a-z0-9][a-z0-9-]{4,}\b/i',
+        '/\b(?:claim|policy|reference)\s*(?:number|no\.?|id|#)\s*[:#-]?\s*(?:is\s+)?[a-z0-9][a-z0-9-]{4,}\b/i',
         '/\b(?:clm|pol|ref)[-_ ]?\d{4,}\b/i',
         '/\b[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}\b/i',
         '/(?:\d[ -]*){13,19}/',

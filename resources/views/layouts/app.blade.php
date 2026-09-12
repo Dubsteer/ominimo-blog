@@ -21,6 +21,7 @@
             $createPostUrl = route('posts.create');
             $loginUrl = route('login');
             $registerUrl = route('register');
+            $adminUrl = route('admin.index');
         @endphp
         <a href='#main-content' class='fixed left-4 top-4 z-50 -translate-y-24 rounded-full bg-ink-950 px-5 py-3 font-bold text-white transition focus:translate-y-0'>
             Skip to content
@@ -49,6 +50,13 @@
                                 'bg-brand-50 text-brand-700' => request()->routeIs('profile.*'),
                                 'text-ink-600' => ! request()->routeIs('profile.*'),
                             ])>Profile</a>
+                            @if (auth()->user()->canModerateContent())
+                                <a href='{{ $adminUrl }}' @class([
+                                    'rounded-full px-4 py-2.5 text-sm font-bold transition hover:bg-brand-50 hover:text-brand-700',
+                                    'bg-brand-50 text-brand-700' => request()->routeIs('admin.*'),
+                                    'text-ink-600' => ! request()->routeIs('admin.*'),
+                                ])>Moderation</a>
+                            @endif
                             <x-button :href='$createPostUrl' size='sm'>New post <span aria-hidden='true'>+</span></x-button>
                             <form method='POST' action='{{ route('logout') }}'>
                                 @csrf
@@ -74,6 +82,9 @@
                             @auth
                                 <a href='{{ route('dashboard') }}' class='block rounded-xl px-4 py-3 font-bold text-ink-800 hover:bg-brand-50'>Dashboard</a>
                                 <a href='{{ route('profile.edit') }}' class='block rounded-xl px-4 py-3 font-bold text-ink-800 hover:bg-brand-50'>Profile</a>
+                                @if (auth()->user()->canModerateContent())
+                                    <a href='{{ $adminUrl }}' class='block rounded-xl px-4 py-3 font-bold text-brand-700 hover:bg-brand-50'>Moderation</a>
+                                @endif
                                 <a href='{{ route('posts.create') }}' class='block rounded-xl px-4 py-3 font-bold text-brand-700 hover:bg-brand-50'>Create a post</a>
                                 <form method='POST' action='{{ route('logout') }}' class='mt-1 border-t border-brand-100 pt-1'>
                                     @csrf

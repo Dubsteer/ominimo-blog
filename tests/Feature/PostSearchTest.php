@@ -150,6 +150,34 @@ class PostSearchTest extends TestCase
         ]))->assertSessionHasErrors(['q', 'claim_stage', 'status', 'author', 'discussion']);
     }
 
+    public function test_search_filters_are_trimmed_and_blank_values_are_ignored(): void
+    {
+        $match = Post::factory()->create([
+            'title' => 'Assessment timeline checklist',
+            'claim_stage' => ClaimStage::Assessment,
+        ]);
+        $other = Post::factory()->create([
+            'title' => 'Review timeline checklist',
+            'claim_stage' => ClaimStage::Review,
+        ]);
+
+        $this->get(route('posts.index', [
+            'q' => ' timeline ',
+            'claim_stage' => ' assessment ',
+            'status' => ' published ',
+            'discussion' => ' ',
+        ]))
+            ->assertOk()
+            ->assertViewHas('filters', [
+                'q' => 'timeline',
+                'claim_stage' => ClaimStage::Assessment->value,
+                'status' => PostStatus::Published->value,
+                'discussion' => null,
+            ])
+            ->assertSeeText($match->title)
+            ->assertDontSeeText($other->title);
+    }
+
     public function test_pagination_preserves_active_filters(): void
     {
         Post::factory()->count(11)->create([

@@ -78,6 +78,11 @@ class PostCrudTest extends TestCase
             'status' => 'unknown-status',
         ])->assertSessionHasErrors(['title', 'content', 'claim_stage', 'status']);
 
+        $this->actingAs($user)->post(route('posts.store'), [
+            ...$this->validPostData(),
+            'content' => 'For reference, my claim number is AB-12345 and I need an update.',
+        ])->assertSessionHasErrors('content');
+
         $this->assertDatabaseEmpty('posts');
     }
 

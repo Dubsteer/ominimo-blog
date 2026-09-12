@@ -55,6 +55,10 @@ class CommentCrudTest extends TestCase
             'comment' => 'Please check claim number CLM-123456 before replying.',
         ])->assertSessionHasErrors('comment');
 
+        $this->post(route('comments.store', $post), [
+            'comment' => 'My claim number is AB-12345 and I would like an update.',
+        ])->assertSessionHasErrors('comment');
+
         $this->assertDatabaseEmpty('comments');
     }
 

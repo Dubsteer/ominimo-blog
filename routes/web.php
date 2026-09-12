@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\ModerationController;
+use App\Http\Controllers\Admin\UserRoleController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CommentController;
@@ -42,5 +44,19 @@ Route::middleware('auth')->group(function (): void {
     Route::patch('/comments/{comment}/status', [CommentController::class, 'updateStatus'])->name('comments.status.update');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 });
+
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware(['auth', 'role:moderator,administrator'])
+    ->group(function (): void {
+        Route::get('/', [ModerationController::class, 'index'])->name('index');
+        Route::patch('/posts/{post}/status', [ModerationController::class, 'updatePostStatus'])->name('posts.status.update');
+        Route::patch('/comments/{comment}/status', [ModerationController::class, 'updateCommentStatus'])->name('comments.status.update');
+
+        Route::middleware('role:administrator')->group(function (): void {
+            Route::get('/users', [UserRoleController::class, 'index'])->name('users.index');
+            Route::patch('/users/{user}/role', [UserRoleController::class, 'update'])->name('users.role.update');
+        });
+    });
 
 Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
