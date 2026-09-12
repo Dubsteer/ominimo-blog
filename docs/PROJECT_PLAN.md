@@ -151,27 +151,27 @@ The HTTP upload itself is not deferred. Expensive processing is performed asynch
 
 ### Phase 8: Administration
 
-- Build the moderation dashboard
-- Add post and comment moderation filters
-- Add administrator-only role management
-- Test every administrator and moderator boundary
+- [x] Build the moderation dashboard
+- [x] Add post and comment moderation filters
+- [x] Add administrator-only role management
+- [x] Test every administrator and moderator boundary
 
 ### Phase 9: Test completion and refactoring
 
-- Complete unit tests for isolated domain logic
-- Complete feature tests for user workflows
-- Remove duplication using Laravel features
-- Run Laravel Pint and the frontend production build
-- Confirm that a fresh database can migrate and seed successfully
+- [x] Complete unit tests for isolated domain logic
+- [x] Complete feature tests for user workflows
+- [x] Remove duplication using Laravel features
+- [x] Run Laravel Pint and the frontend production build
+- [x] Confirm that a fresh database can migrate and seed successfully
 
 ### Phase 10: Delivery
 
-- Complete installation and operating instructions
-- Add an entity-relationship diagram and application screenshots
-- Document architectural decisions and known limitations
-- Verify that no secrets or local artifacts are tracked
-- Run the complete quality suite
-- Review the Git history and prepare the private GitHub repository for submission
+- [x] Complete installation and operating instructions
+- [x] Add an entity-relationship diagram and application screenshots
+- [x] Document architectural decisions and known limitations
+- [x] Verify that no secrets or local artifacts are tracked
+- [x] Run the complete quality suite
+- [x] Review the Git history and prepare the private GitHub repository for submission
 
 ## Git workflow
 

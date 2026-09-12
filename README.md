@@ -4,9 +4,9 @@ A Laravel community platform where customers can share experiences, ask question
 
 ## Project status
 
-Preparation and Phases 2 through 7 are complete. The application includes Laravel session authentication, account management, role boundaries, representative seed data, complete post and comment lifecycles, database-backed search and filters, preserved pagination, strict relationship loading, validated image uploads, asynchronous image optimization, Redis queues monitored by Laravel Horizon, and an accessible Ominimo-inspired responsive Blade interface built from reusable design tokens and components.
+All ten implementation and delivery phases are complete. The application includes Laravel session authentication, account management, role boundaries, representative seed data, complete post and comment lifecycles, database-backed search and filters, preserved pagination, strict relationship loading, validated image uploads, asynchronous image optimization, Redis queues monitored by Laravel Horizon, an accessible Ominimo-inspired responsive Blade interface, and a role-protected administration workspace for content moderation and user-role management. The domain and user workflows are covered by unit and feature tests.
 
-## Planned functionality
+## Implemented functionality
 
 - User registration, login, logout, and profile management
 - User, moderator, and administrator roles
@@ -19,6 +19,8 @@ Preparation and Phases 2 through 7 are complete. The application includes Larave
 - Validated image uploads with queued image processing
 - Redis queues monitored through Laravel Horizon
 - Responsive Blade interface inspired by Ominimo's visual identity
+- Moderator dashboard with post and comment search, filters, and status controls
+- Administrator-only user-role management
 - Feature and unit test coverage
 
 ## Technology
@@ -49,7 +51,7 @@ Laravel Horizon requires the `pcntl` and `posix` PHP extensions available in Lin
 3. Start MySQL and Redis with `docker compose up -d`.
 4. Run `php artisan migrate --seed`.
 5. Expose processed images with `php artisan storage:link`.
-6. Run `npm install` and `npm run build`.
+6. Run `npm ci` and `npm run build`.
 7. Start Laravel with `php artisan serve`.
 8. Build and start Horizon with `docker compose --profile worker up -d --build horizon`.
 
@@ -63,6 +65,8 @@ Keep the Horizon worker running whenever queued images should be processed. Its 
 - Replacing or removing an image, deleting a post, and deleting an account clean up the corresponding files. Stale jobs cannot overwrite a newer image.
 - Horizon processes both the `images` and `default` queues. Its metrics snapshot runs every five minutes through Laravel's scheduler, so production must also run `php artisan schedule:work` or invoke `php artisan schedule:run` every minute.
 
+## Demo accounts
+
 The local seeder creates these demonstration accounts:
 
 | Role | Email | Local password |
@@ -73,11 +77,11 @@ The local seeder creates these demonstration accounts:
 
 These credentials are only for seeded local development data and must be replaced outside local development.
 
-Do not commit `.env`, database data, uploaded files, credentials, or API keys.
+Do not commit `.env`, database data, uploaded files, real credentials, or API keys.
 
 ## Documentation
 
-The implementation phases, architecture decisions, acceptance criteria, and quality standards are recorded in [docs/PROJECT_PLAN.md](docs/PROJECT_PLAN.md).
+The [project plan](docs/PROJECT_PLAN.md) records the implementation phases and acceptance criteria. See [architecture and limitations](docs/ARCHITECTURE.md), [installation and operations](docs/OPERATIONS.md), and [application screenshots](docs/SCREENSHOTS.md) for the delivery handoff.
 
 ## Testing and quality
 
