@@ -22,8 +22,8 @@ class DatabaseSeederTest extends TestCase
         $this->assertSame(3, User::query()->count());
         $this->assertSame(4, Post::query()->count());
         $this->assertSame(4, Comment::query()->count());
-        $this->assertDatabaseHas('users', ['email' => 'kronos.p@example.com', 'role' => UserRole::User->value]);
-        $this->assertDatabaseHas('users', ['email' => 'themis.r@example.com', 'role' => UserRole::Moderator->value]);
-        $this->assertDatabaseHas('users', ['email' => 'atlas.m@example.com', 'role' => UserRole::Administrator->value]);
+        $this->assertDatabaseHas('users', ['email' => 'nikola.petrovic@example.com', 'role' => UserRole::User->value]);
+        $this->assertDatabaseHas('users', ['email' => 'aleksa.jovanovic@example.com', 'role' => UserRole::Moderator->value]);
+        $this->assertDatabaseHas('users', ['email' => 'bogdan.markovic@example.com', 'role' => UserRole::Administrator->value]);
     }
 }

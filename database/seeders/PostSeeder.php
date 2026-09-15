@@ -14,7 +14,7 @@ class PostSeeder extends Seeder
     {
         $posts = [
             [
-                'author' => 'kronos.p@example.com',
+                'author' => 'nikola.petrovic@example.com',
                 'slug' => 'preparing-for-the-first-assessment',
                 'title' => 'Preparing for the first assessment conversation',
                 'claim_stage' => ClaimStage::Assessment,
@@ -23,7 +23,7 @@ class PostSeeder extends Seeder
                 'content' => 'I found it useful to prepare a short timeline before the assessment conversation. I kept it general, removed every identifying reference, and focused on the sequence of events and the questions I still needed answered.',
             ],
             [
-                'author' => 'themis.r@example.com',
+                'author' => 'aleksa.jovanovic@example.com',
                 'slug' => 'questions-to-ask-during-review',
                 'title' => 'Questions that helped during the review stage',
                 'claim_stage' => ClaimStage::Review,
@@ -32,7 +32,7 @@ class PostSeeder extends Seeder
                 'content' => 'During review, written questions helped me understand which documents were still needed and when I should expect the next update. Sharing the process without personal identifiers can help others prepare for similar conversations.',
             ],
             [
-                'author' => 'atlas.m@example.com',
+                'author' => 'bogdan.markovic@example.com',
                 'slug' => 'understanding-a-claim-decision',
                 'title' => 'Understanding the wording of a claim decision',
                 'claim_stage' => ClaimStage::Decision,
@@ -41,7 +41,7 @@ class PostSeeder extends Seeder
                 'content' => 'A clear decision summary should explain the outcome, the information considered, and any next steps. I recommend asking for clarification when wording is unclear, while keeping all account-specific information out of public discussions.',
             ],
             [
-                'author' => 'kronos.p@example.com',
+                'author' => 'nikola.petrovic@example.com',
                 'slug' => 'draft-notes-for-closing-the-process',
                 'title' => 'Draft notes for closing the process',
                 'claim_stage' => ClaimStage::Closed,

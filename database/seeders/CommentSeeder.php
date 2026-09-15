@@ -15,7 +15,7 @@ class CommentSeeder extends Seeder
         $comments = [
             [
                 'post' => 'preparing-for-the-first-assessment',
-                'author' => 'themis.r@example.com',
+                'author' => 'aleksa.jovanovic@example.com',
                 'status' => CommentStatus::Active,
                 'comment' => 'A short, date-ordered timeline also made my assessment questions much easier to explain.',
             ],
@@ -27,7 +27,7 @@ class CommentSeeder extends Seeder
             ],
             [
                 'post' => 'questions-to-ask-during-review',
-                'author' => 'kronos.p@example.com',
+                'author' => 'nikola.petrovic@example.com',
                 'status' => CommentStatus::Active,
                 'comment' => 'Writing down the expected next step helped me follow the review process too.',
             ],

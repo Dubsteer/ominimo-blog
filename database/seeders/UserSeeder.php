@@ -12,21 +12,21 @@ class UserSeeder extends Seeder
     {
         $accounts = [
             [
-                'name' => 'Kronos P.',
-                'email' => 'kronos.p@example.com',
-                'password' => '!Kronos.p1',
+                'name' => 'Nikola Petrović',
+                'email' => 'nikola.petrovic@example.com',
+                'password' => '!Nikola.p1',
                 'role' => UserRole::User,
             ],
             [
-                'name' => 'Themis R.',
-                'email' => 'themis.r@example.com',
-                'password' => '!Themis.t2',
+                'name' => 'Aleksa Jovanović',
+                'email' => 'aleksa.jovanovic@example.com',
+                'password' => '!Aleksa.j2',
                 'role' => UserRole::Moderator,
             ],
             [
-                'name' => 'Atlas M.',
-                'email' => 'atlas.m@example.com',
-                'password' => '!Atlas.a3',
+                'name' => 'Bogdan Marković',
+                'email' => 'bogdan.markovic@example.com',
+                'password' => '!Bogdan.m3',
                 'role' => UserRole::Administrator,
             ],
         ];

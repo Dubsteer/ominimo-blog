@@ -1,6 +1,6 @@
 # Application screenshots
 
-Captured on 12 September 2026 from the running Laravel application with the production frontend build and an isolated, freshly seeded SQLite preview database. All visible names and email addresses are demonstration data; no real claim details are shown.
+Captured on 15 September 2026 from the running Laravel application with the production frontend build and an isolated, freshly seeded SQLite preview database. All visible names and email addresses are demonstration data; no real claim details are shown.
 
 ## Public experience
 
